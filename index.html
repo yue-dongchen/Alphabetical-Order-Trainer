@@ -1,7 +1,33 @@
 <!DOCTYPE html>
 <html>
-    <div id="option-1"></div>
-    <div id="option-2"></div>
+    <head>
+      <style>
+        .option {
+          height: 500px;
+          width: 500px;
+          text-align: center;
+          background-color: aquamarine;
+          line-height: 500px;
+          font-size: 96px;
+        }
+
+        #option-1 {
+          position:absolute;
+          left: 400px;
+        }
+        #option-2 {
+          position: absolute;
+          right: 400px;
+        }
+
+        #validation {
+          text-align: center;
+          font-size: 34px;
+        }
+      </style>
+    </head>
+    <div class="option" id="option-1"></div>
+    <div class="option" id="option-2"></div>
     <div id="validation"></div>
     <script>
         let option1 = document.querySelector("#option-1");
@@ -40,25 +66,36 @@
         }
 
         function newRound() {
+          document.removeEventListener("keydown", newRound);
+
+          document.body.style.backgroundColor = "white";
+          validityIndicator.textContent = "Which comes first?";
+
           letterPair = randomPair();
 
           option1.textContent = letterPair[0]["glyph"];
           option2.textContent = letterPair[1]["glyph"];
-        }
 
-        document.addEventListener("keydown", (event) => {
+          document.addEventListener("keydown", function _listener(event) {
           if (event.key == 1 | event.key == 2) {
             let pair = [option1.textContent, option2.textContent];
             let validity = validate(pair[event.key - 1], pair);
             
             if (validity == true) {
               validityIndicator.textContent = "Correct";
+              document.body.style.backgroundColor = "#4bb543";
+              new Audio("assets/correct.mp3").play();
             } else {
               validityIndicator.textContent = "Incorrect";
+              document.body.style.backgroundColor = "#ff0033";
+              new Audio("assets/incorrect.mp3").play();
             }
           }
-          newRound()
+
+          document.removeEventListener("keydown", _listener);
+          document.addEventListener("keydown", newRound);
         });
+        }
 
         newRound();
     </script>
