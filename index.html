@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+    <div id="option-1"></div>
+    <div id="option-2"></div>
+    <div id="validation"></div>
+    <script>
+        let option1 = document.querySelector("#option-1");
+        let option2 = document.querySelector("#option-2");
+        let validityIndicator = document.querySelector("#validation");
+        
+        // hijāʾī sequence
+        const alphabet = ["ا", "ب", "ت", "ث", "ج", "ح", "خ", "د", "ذ", "ر", "ز", "س", "ش", "ص", "ض", "ط", "ظ", "ع", "غ", "ف", "ق", "ك", "ل", "م", "ن", "ه", "و", "ي"];
+        
+        // generate a random pair of Arabic letters
+        function randomPair() {
+          let firstLetterIndex = Math.floor(Math.random() * alphabet.length)
+          let secondLetterIndex = Math.floor(Math.random() * alphabet.length)
+          // Regenerate if the letters are same
+          while (firstLetterIndex == secondLetterIndex) {
+            secondLetterIndex = Math.floor(Math.random() * alphabet.length);
+          }
+
+          let firstLetter = {glyph: alphabet[firstLetterIndex], position: firstLetterIndex}
+          let secondLetter = {glyph: alphabet[secondLetterIndex], position: secondLetterIndex}
+
+          return [firstLetter, secondLetter]
+        }
+
+        // check if the selected letter indeed comes first
+        function validate(letter, pair) {
+          let indexOfSelected = alphabet.indexOf(letter);
+          let indexOfOther;
+          if (indexOfSelected == alphabet.indexOf(pair[0])) {
+            indexOfOther = alphabet.indexOf(pair[1]);
+          } else {
+            indexOfOther = alphabet.indexOf(pair[0]);
+          }
+
+          return (indexOfSelected < indexOfOther);
+        }
+
+        function newRound() {
+          letterPair = randomPair();
+
+          option1.textContent = letterPair[0]["glyph"];
+          option2.textContent = letterPair[1]["glyph"];
+        }
+
+        document.addEventListener("keydown", (event) => {
+          if (event.key == 1 | event.key == 2) {
+            let pair = [option1.textContent, option2.textContent];
+            let validity = validate(pair[event.key - 1], pair);
+            
+            if (validity == true) {
+              validityIndicator.textContent = "Correct";
+            } else {
+              validityIndicator.textContent = "Incorrect";
+            }
+          }
+          newRound()
+        });
+
+        newRound();
+    </script>
+</html>
